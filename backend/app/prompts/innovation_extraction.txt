@@ -1,0 +1,10 @@
+Extract innovation points from the provided research paper.
+
+For each innovation identified:
+1. Give it a clear title
+2. Describe what makes it innovative
+3. Categorize it (Method, Tool, Theory, Application, Other)
+4. Rate its significance (0-1)
+5. Identify related innovations or fields it connects to
+
+Return as a JSON array of innovation objects.

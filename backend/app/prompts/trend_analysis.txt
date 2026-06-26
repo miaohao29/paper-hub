@@ -1,0 +1,10 @@
+Analyze research trends from the provided papers.
+
+Identify:
+1. Emerging research directions
+2. Popular methodologies gaining adoption
+3. Hot topics and keywords trending upward
+4. Research gaps and unexplored areas
+5. Collaborative patterns between authors and institutions
+
+Provide insights on where the research field is heading.
