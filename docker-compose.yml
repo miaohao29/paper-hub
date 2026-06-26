@@ -1,26 +1,28 @@
 version: '3.8'
 
 services:
+  # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
+    container_name: paper-hub-db
     environment:
+      POSTGRES_USER: paper_hub
+      POSTGRES_PASSWORD: secure_password
       POSTGRES_DB: paper_hub
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-    ports:
-      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user"]
+      test: ["CMD-SHELL", "pg_isready -U paper_hub"]
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - paper-hub-network
 
+  # Redis Cache
   redis:
     image: redis:7-alpine
+    container_name: paper-hub-cache
     ports:
       - "6379:6379"
     volumes:
@@ -30,89 +32,50 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - paper-hub-network
 
+  # Backend API
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    container_name: paper-hub-api
+    environment:
+      DATABASE_URL: postgresql://paper_hub:secure_password@postgres:5432/paper_hub
+      REDIS_URL: redis://redis:6379/0
+      LLM_API_KEY: ${LLM_API_KEY}
+      EMBEDDING_API_KEY: ${EMBEDDING_API_KEY}
     ports:
       - "8000:8000"
-    environment:
-      DATABASE_URL: postgresql://user:password@postgres:5432/paper_hub
-      REDIS_URL: redis://redis:6379/0
-      PYTHONUNBUFFERED: 1
-    volumes:
-      - ./backend:/app
-      - ./uploads:/app/uploads
-      - ./lancedb:/app/lancedb
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
-    networks:
-      - paper-hub-network
-
-  celery:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    command: celery -A app.tasks.celery_app worker --loglevel=info
-    environment:
-      DATABASE_URL: postgresql://user:password@postgres:5432/paper_hub
-      REDIS_URL: redis://redis:6379/0
-      PYTHONUNBUFFERED: 1
     volumes:
-      - ./backend:/app
+      - ./backend/app:/app/app
       - ./uploads:/app/uploads
       - ./lancedb:/app/lancedb
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - paper-hub-network
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 
-  celery-beat:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    command: celery -A app.tasks.celery_app beat --loglevel=info
-    environment:
-      DATABASE_URL: postgresql://user:password@postgres:5432/paper_hub
-      REDIS_URL: redis://redis:6379/0
-      PYTHONUNBUFFERED: 1
-    volumes:
-      - ./backend:/app
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - paper-hub-network
-
+  # Frontend
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    command: npm run dev -- --host 0.0.0.0
+    container_name: paper-hub-web
     ports:
       - "5173:5173"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     environment:
       VITE_API_URL: http://localhost:8000
     depends_on:
       - backend
-    networks:
-      - paper-hub-network
+    volumes:
+      - ./frontend/src:/app/src
 
 volumes:
   postgres_data:
   redis_data:
 
 networks:
-  paper-hub-network:
-    driver: bridge
+  default:
+    name: paper-hub-network

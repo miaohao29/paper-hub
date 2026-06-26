@@ -1,116 +1,38 @@
-# Python
+*.pyc
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-PIPFILE.lock
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-.alembic_history
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-.sublime-project
-.sublime-workspace
-
-# Node
-node_modules/
-npm-debug.log
-yarn-error.log
-dist/
-build/
-.next/
-.nuxt/
-.cache/
-.nuxt
-.env.local
-.env.*.local
-.env.production.local
-
-# Environment
 .env
 .env.local
-.env.*.local
-.env.test
-.env.production
-
-# Uploads
-uploads/
-*.pdf
-*.docx
-*.pptx
-*.xlsx
-*.xls
-*.odt
-
-# Vector Database
-lancedb/
-.lancedb/
-
-# Celery
-celerybeat-schedule
-celerybeat.pid
-
-# Testing
-.coverage
-.coverage.*
-.pytest_cache/
-.hypothesis/
-htmlcov/
-.tox/
-.nox/
-.coverage
-coverage.xml
-
-# Logs
-*.log
-logs/
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Temporary
-*.tmp
-*.bak
+.venv
+venv/
+ENV/
+.idea/
+.vscode/
 *.swp
 *.swo
 *~
-.#*
-
-# Dependencies
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-.pnp.*
-
-# Docker
-.dockerignore
+.DS_Store
+node_modules/
+dist/
+build/
+.turbo/
+.next/
+out/
+.nuxt/
+coverage/
+.nyc_output/
+*.log
+log.txt
+npm-debug.log*
+web.config
+.env*.example
+local.properties
+.cache/
+.eslintcache
+.pytest_cache/
+.coverage
+html_cov/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+lancedb/
+uploads/

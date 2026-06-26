@@ -1,0 +1,3 @@
+recursive-include app
+recursive-include alembic
+include *.txt *.md
